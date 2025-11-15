@@ -1,14 +1,31 @@
-# stage-1
-FROM amazoncorretto:11-alpine-jdk as builder
-RUN mkdir -p /app/source
-COPY . /app/source
-WORKDIR /app/source
-RUN ./mvnw package
-# ENTRYPOINT ["java", "-jar", "./target/datastore-0.0.4.jar"]
+# ============================
+# Stage 1: Build the JAR
+# ============================
+FROM amazoncorretto:11-alpine-jdk AS builder
 
-#stage-2
+WORKDIR /app
+
+# Copy source code
+COPY . .
+
+# Fix: Ensure mvnw is executable
+RUN chmod +x mvnw
+
+# Build the application
+RUN ./mvnw clean package -DskipTests
+
+# ============================
+# Stage 2: Run the Application
+# ============================
 FROM amazoncorretto:11-alpine-jdk
-COPY --from=builder /app/source/target/*.jar /app/app.jar
-EXPOSE 8081
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
 
+WORKDIR /app
+
+# Copy only the final JAR from builder image
+COPY --from=builder /app/target/*.jar app.jar
+
+# Expose application port
+EXPOSE 8081
+
+# Run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]
