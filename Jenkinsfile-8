@@ -12,7 +12,7 @@ pipeline {
   stages {
     stage("Repo Clone") {
       steps {
-        checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/shivagande26/DataStore.git']])
+        checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/vishnuthatiparthi/Java-Jenkins-CICD.git']])
       }
     }
     stage("Maven Build") {
@@ -64,7 +64,7 @@ pipeline {
       steps{
         sh """
           echo "-------- Tagging Docker Image --------"
-          docker tag datastore:"${App_Version}" 8072388539/datastore:"${App_Version}"
+          docker tag datastore:"${App_Version}" vishnu898/datastore:"${App_Version}"
           echo "-------- Tagging Docker Image Completed."
         """
       }
@@ -77,7 +77,7 @@ pipeline {
           echo "-------- DockerHub Login Successful --------"
 
           echo "-------- Pushing Docker Image To DockerHub --------"
-          docker push 8072388539/datastore:"${App_Version}"
+          docker push vishnu898/datastore:"${App_Version}"
           echo "-------- Docker Image Pushed Successfully --------"
         """
       }
