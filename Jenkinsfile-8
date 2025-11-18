@@ -6,24 +6,58 @@ pipeline {
   }
 
   environment {
-    DOCKERHUB_CREDENTIALS=credentials("dockerhub")
+    DOCKERHUB_CREDENTIALS = credentials("dockerhub")
   }
 
   stages {
+
     stage("Repo Clone") {
       steps {
+<<<<<<< HEAD
         checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/vishnuthatiparthi/Java-Jenkins-CICD.git']])
+=======
+        checkout scmGit(
+          branches: [[name: '*/master']],
+          extensions: [],
+          userRemoteConfigs: [[url: 'https://github.com/shivagande26/DataStore.git']]
+        )
+>>>>>>> d5fd54f (jenkins)
       }
     }
+
     stage("Maven Build") {
       steps {
         sh """
             echo "-------- Building Application --------"
-            mvn clean package
+            mvn clean package -DskipTests
             echo "------- Application Built Successfully --------"
         """
       }
     }
+
+    stage("SonarQube Analysis") {
+      steps {
+        withSonarQubeEnv('sonar') {
+          sh """
+            echo "-------- Running SonarQube Scan --------"
+            mvn sonar:sonar \
+            -Dsonar.projectKey=datastore \
+            -Dsonar.projectName=datastore \
+            -Dsonar.sources=src \
+            -Dsonar.java.binaries=target
+          """
+        }
+      }
+    }
+
+    stage("SonarQube Quality Gate") {
+      steps {
+        timeout(time: 2, unit: 'MINUTES') {
+          waitForQualityGate abortPipeline: true
+        }
+      }
+    }
+
     stage("Maven Test") {
       steps {
         sh """
@@ -33,6 +67,7 @@ pipeline {
         """
       }
     }
+
     stage("Artifact Store") {
       steps {
         sh """
@@ -42,6 +77,7 @@ pipeline {
         """
       }
     }
+
     stage("Docker Image Build") {
       steps {
         sh """
@@ -51,6 +87,7 @@ pipeline {
         """
       }
     }
+
     stage("Docker Image Scan") {
       steps {
         sh """
@@ -60,16 +97,23 @@ pipeline {
         """
       }
     }
+
     stage("Docker Image Tag") {
-      steps{
+      steps {
         sh """
           echo "-------- Tagging Docker Image --------"
+<<<<<<< HEAD
           docker tag datastore:"${App_Version}" vishnu898/datastore:"${App_Version}"
           echo "-------- Tagging Docker Image Completed."
+=======
+          docker tag datastore:"${App_Version}" 8072388539/datastore:"${App_Version}"
+          echo "-------- Tagging Docker Image Completed --------"
+>>>>>>> d5fd54f (jenkins)
         """
       }
     }
-    stage("Loggingin & Pushing Docker image") {
+
+    stage("Login & Push Docker image") {
       steps {
         sh """
           echo "-------- Logging To DockerHub --------"
@@ -82,7 +126,8 @@ pipeline {
         """
       }
     }
-    stage("cleanup") {
+
+    stage("Cleanup") {
       steps {
         sh """
            echo "-------- Cleaning Up Jenkins Machine --------"
@@ -91,6 +136,7 @@ pipeline {
         """
       }
     }
+
     stage("Deployment Acceptance") {
       steps {
         input 'Trigger Down Stream Job'
