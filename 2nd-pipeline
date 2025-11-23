@@ -18,7 +18,7 @@ pipeline {
                 sh """
                   echo "-------- Updating File Content --------"
                   cd "${params.App_Name}"
-                  sed -i 's/image:.*/image: 8072388539\\/datastore:${params.App_Version}/g' "${params.App_Name}".yaml
+                  sed -i 's/image:.*/image: 8072388539/datastore:${params.App_Version}/g' "${params.App_Name}".yaml
                   echo "-------- File Content Updated Successfully --------"
                 """
             }
