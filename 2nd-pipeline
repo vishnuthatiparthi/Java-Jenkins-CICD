@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage("cloning repo") {
             steps {
-                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/shivagande26/Kubernetes-ArgoCD.git']])
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/vishnuthatiparthi/DataStore-Kubernetes-ArgoCD.git']])
             }
         }
         stage("updating image version in a file") {
