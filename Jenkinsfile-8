@@ -19,7 +19,7 @@ pipeline {
         checkout scmGit(
           branches: [[name: '*/master']],
           extensions: [],
-          userRemoteConfigs: [[url: 'https://github.com/shivagande26/DataStore.git']]
+          userRemoteConfigs: [[url: 'https://github.com/vishnuthatiparthi/DataStore.git']]
         )
 >>>>>>> d5fd54f (jenkins)
       }
